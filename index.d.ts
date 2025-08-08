@@ -3,7 +3,7 @@
  * @param {MatomoOptions} setupOptions - The options for the Matomo tracker.
  * @returns {MatomoTracker}
  */
-export function init(setupOptions: MatomoOptions): MatomoTracker;
+export function initMatomo(setupOptions: MatomoOptions): MatomoTracker;
 export type MatomoOptions = {
     /**
      * - The URL of the Matomo instance.

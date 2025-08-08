@@ -1,7 +1,15 @@
 {
   "name": "@certible/use-matomo",
   "type": "module",
-  "main": "matomo.js",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "main": "index.js",
+  "module": "index.js",
   "version": "1.0.0",
   "description": "A typed framework agnostic wrapper for Matomo js including SPA tracking.",
   "author": "Certible <oberreiter@certible.com>",
@@ -14,6 +22,10 @@
     "url": "https://github.com/certible/use-matomo/issues"
   },
   "homepage": "https://github.com/certible/use-matomo#readme",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
     "test": "vitest",
     "test:ci": "vitest run",

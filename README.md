@@ -11,7 +11,7 @@ npm install @certible/use-matomo
 ## Usage
 
 ```javascript
-import { init } from '@certible/use-matomo';
+import { initMatomo } from '@certible/use-matomo';
 
 const matomo = initMatomo({
   host: 'https://your-matomo-instance.com',
