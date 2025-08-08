@@ -13,7 +13,7 @@ npm install @certible/use-matomo
 ```javascript
 import { init } from '@certible/use-matomo';
 
-const matomo = init({
+const matomo = initMatomo({
   host: 'https://your-matomo-instance.com',
   siteId: 1
 });
@@ -26,3 +26,7 @@ const matomo = init({
 // Track an event
 matomo.trackEvent('Category', 'Action', 'Name', 1);
 ```
+
+## License
+
+This project is licensed under the MIT License.

@@ -58,7 +58,18 @@ function loadScript(trackerScript, crossOrigin) {
  * @param {MatomoOptions} setupOptions - The options for the Matomo tracker.
  * @returns {MatomoTracker}
  */
-export function init(setupOptions) {
+export function initMatomo(setupOptions) {
+  if( typeof window === 'undefined') {
+    throw new Error('Matomo tracker can only be initialized in a browser environment.');
+  }
+  if(!setupOptions || !setupOptions.host || !setupOptions.siteId) {
+    throw new Error('Matomo tracker requires a host and siteId to be set.');
+  }
+  if (window._paq && window._paq.length > 0) {
+    console.warn('Matomo tracker is already initialized. Skipping initialization.');
+    return undefined;
+  }
+
   previousUrl = window.location.href;
   const options = {
     trackerFileName: 'matomo',
@@ -118,11 +129,10 @@ export function init(setupOptions) {
     .catch((error) => {
       if (error.target) {
         return console.error(
-          `[spa-matomo] An error occurred trying to load ${error.target.src}. ` +
-          'If the file exists you may have an ad- or trackingblocker enabled.'
+          `An error occurred trying to load ${error.target.src}. `
         );
       }
-      console.error('[spa-matomo]', error);
+      console.error(error);
     });
 
   /**

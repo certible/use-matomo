@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { init } from '../index.js';
+import { initMatomo } from '../index.js';
 
 const TRACKER_URL = './track.js';
 const PORT = 5173; // Default Vite dev server port
@@ -12,7 +12,7 @@ describe('matomo', () => {
   });
 
   it('should initialize with basic options', () => {
-    const matomo = init({
+    const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
       trackerUrl: TRACKER_URL,
@@ -25,7 +25,7 @@ describe('matomo', () => {
   });
 
   it('should return a tracker object', () => {
-    const matomo = init({
+    const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
     });
@@ -36,7 +36,7 @@ describe('matomo', () => {
   });
 
   it('trackPageView should push correct data to _paq', () => {
-    const matomo = init({
+    const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
     });
@@ -47,7 +47,7 @@ describe('matomo', () => {
   });
 
   it('trackEvent should push correct data to _paq', () => {
-    const matomo = init({
+    const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
     });
@@ -57,7 +57,7 @@ describe('matomo', () => {
   });
 
   it('push should push arguments to _paq', () => {
-    const matomo = init({
+    const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
     });
@@ -67,7 +67,7 @@ describe('matomo', () => {
   });
 
   it('should automatically track router changes if trackRouter is true', async () => {
-    init({
+    initMatomo({
       host: 'https://example.com',
       siteId: 1,
       trackRouter: true,
@@ -84,7 +84,7 @@ describe('matomo', () => {
   });
 
   it('should automatically track router change with HASH mode', async () => {
-    init({
+    initMatomo({
       host: 'https://example.com',
       siteId: 1,
       trackRouter: true,
