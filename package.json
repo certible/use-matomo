@@ -1,15 +1,8 @@
 {
   "name": "@certible/use-matomo",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js",
-      "default": "./index.js"
-    }
-  },
-  "main": "index.js",
-  "module": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "version": "1.0.0",
   "description": "A typed framework agnostic wrapper for Matomo js including SPA tracking.",
   "author": "Certible <oberreiter@certible.com>",
@@ -23,14 +16,14 @@
   },
   "homepage": "https://github.com/certible/use-matomo#readme",
   "files": [
-    "index.js",
-    "index.d.ts"
+    "dist"
   ],
   "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist",
     "test": "vitest",
-    "test:ci": "vitest run",
-    "types": "tsc index.js --declaration --allowJs --emitDeclarationOnly --outDir .",
-    "prepare": "husky"
+    "test:ci": "npm run build && vitest"
   },
   "keywords": [
     "matomo",
@@ -40,13 +33,8 @@
   ],
   "devDependencies": {
     "@vitest/browser": "^1.6.1",
-    "husky": "^9.1.7",
     "playwright": "^1.54.2",
     "typescript": "^5.9.2",
     "vitest": "^1.6.1"
-  },
-  "dependencies": {
-    "install": "0.13.0",
-    "npm": "11.5.2"
   }
 }

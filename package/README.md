@@ -15,13 +15,12 @@ import { initMatomo } from '@certible/use-matomo';
 
 const matomo = initMatomo({
   host: 'https://your-matomo-instance.com',
-  siteId: 1,
-  // trackRouter: true, automatically tracks SPA page changes via history tracking
+  siteId: 1
 });
 
-// Manually track router changes
+// On route change
 // router.afterEach((to, from) => {
-//   matomo.trackPageView(to.path, opts);
+//   matomo.trackPageView(to.path);
 // });
 
 // Track an event

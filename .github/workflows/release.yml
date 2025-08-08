@@ -23,6 +23,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
           scope: '@certible'
         if: ${{ steps.release.outputs.release_created }}
+      - run: npm build
+        if: ${{ steps.release.outputs.release_created }}
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

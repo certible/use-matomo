@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { initMatomo } from '../index.js';
+import { initMatomo } from '../dist/index.js';
 
 const TRACKER_URL = './track.js';
 const PORT = 5173; // Default Vite dev server port
@@ -83,7 +83,7 @@ describe('matomo', () => {
     expect(pushSpy).toHaveBeenCalledWith(['trackPageView']);
   });
 
-  it('should automatically track router change with HASH mode', async () => {
+  it('should automatically track router change with hash mode', async () => {
     initMatomo({
       host: 'https://example.com',
       siteId: 1,
