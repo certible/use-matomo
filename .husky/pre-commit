@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+npm run types
+git add index.d.ts
