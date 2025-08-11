@@ -28,6 +28,47 @@ const matomo = initMatomo({
 matomo.trackEvent('Category', 'Action', 'Name', 1);
 ```
 
+### vue.js
+
+```javascript
+import { initMatomo } from '@certible/use-matomo';
+import { createApp } from 'vue';
+import App from './App.vue';
+const app = createApp(App);
+app.use(initMatomo({
+  host: 'https://your-matomo-instance.com',
+  siteId: 1,
+  // trackRouter: true, automatically tracks SPA page changes via history tracking
+}));
+app.provide('matomo', matomo);
+```
+
+```javascript
+// In your components, you can access Matomo like this:
+import { inject } from 'vue';
+
+const matomo = inject<MatomoTracker>('matomo');
+```
+
+#### Quasar
+
+```javascript
+// quasar boot file: src/boot/matomo.js
+import { defineBoot } from '#q-app/wrappers';
+import { initMatomo } from '@certible/use-matomo';
+
+
+export default defineBoot(({ app }) => {
+  const matomo = initMatomo({
+    host: 'https://your-matomo-instance.com',
+    siteId: 1,
+    // trackRouter: true, automatically tracks SPA page changes via history tracking
+  });
+
+  app.provide('matomo', matomo);
+});
+```
+
 ## Configuration Options
 
 The `initMatomo` function accepts a configuration object with the following options:
