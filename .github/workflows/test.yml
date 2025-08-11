@@ -20,7 +20,7 @@ jobs:
         run: npm install
 
       - name: Init Playwright
-        run: npx playwright install
+        run: npx playwright install chromium --only-shell
 
       - name: Run tests
         run: npm run test:ci
