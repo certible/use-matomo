@@ -229,12 +229,20 @@ export function initMatomo(setupOptions: MatomoOptions) {
   }
 
   if (options.trackRouter) {
+    let trackingScheduled = false;
+
     const track = (): void => {
       const currentUrl = window.location.href;
-      if (previousUrl === currentUrl) {
+
+      if (previousUrl === currentUrl || trackingScheduled) {
         return;
       }
-      requestAnimationFrame(() => trackPageView(currentUrl));
+      
+      trackingScheduled = true;
+      requestAnimationFrame(() => {
+        trackPageView(currentUrl);
+        trackingScheduled = false;
+      });
     };
 
     // Monkey patch pushState and replaceState to track page changes
