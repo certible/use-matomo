@@ -1,0 +1,40 @@
+{
+  "name": "@certible/use-matomo",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "1.0.0",
+  "description": "A typed framework agnostic wrapper for Matomo js including SPA tracking.",
+  "author": "Certible <oberreiter@certible.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/certible/use-matomo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/certible/use-matomo/issues"
+  },
+  "homepage": "https://github.com/certible/use-matomo#readme",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "test:ci": "npm run build && vitest"
+  },
+  "keywords": [
+    "matomo",
+    "spa",
+    "analytics",
+    "tracking"
+  ],
+  "devDependencies": {
+    "@vitest/browser": "^1.6.1",
+    "playwright": "^1.54.2",
+    "typescript": "^5.9.2",
+    "vitest": "^1.6.1"
+  }
+}
