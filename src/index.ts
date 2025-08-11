@@ -234,7 +234,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
       if (previousUrl === currentUrl) {
         return;
       }
-      setTimeout(() => trackPageView(currentUrl), 0);
+      requestAnimationFrame(() => trackPageView(currentUrl));
     };
 
     // Monkey patch pushState and replaceState to track page changes
