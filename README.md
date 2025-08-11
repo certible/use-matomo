@@ -122,6 +122,98 @@ const matomo = initMatomo({
 });
 ```
 
+## API Methods
+
+Once initialized, the Matomo tracker returns an object with the following methods:
+
+### `trackEvent(category, action, name?, value?)`
+
+Tracks a custom event.
+
+**Parameters:**
+
+- `category` (string): The category of the event
+- `action` (string): The action of the event  
+- `name` (string, optional): The name of the event
+- `value` (number, optional): The value of the event
+
+**Example:**
+
+```javascript
+// Track a button click
+matomo.trackEvent('Navigation', 'Click', 'Header Logo');
+
+// Track with a value
+matomo.trackEvent('Purchase', 'Complete', 'Premium Plan', 99.99);
+```
+
+### `trackPageView(url?, props?)`
+
+Tracks a page view in a single-page application.
+
+**Parameters:**
+
+- `url` (string, optional): The URL of the page to track. Defaults to `window.location.href`
+- `props` (object, optional): Additional properties for the page view
+  - `deleteCustomVariables` (boolean): Whether to delete custom variables. Default: `true`
+  - `documentTitle` (string): Custom document title. Default: `document.title`
+
+**Example:**
+
+```javascript
+// Track current page
+matomo.trackPageView();
+
+// Track specific URL
+matomo.trackPageView('/dashboard');
+
+// Track with custom title
+matomo.trackPageView('/profile', { 
+  documentTitle: 'User Profile - MyApp' 
+});
+```
+
+### `setUserId(userId)`
+
+Sets or resets the user ID for tracking across sessions.
+
+**Parameters:**
+
+- `userId` (string | null): The user ID to set, or `null` to reset
+
+**Example:**
+
+```javascript
+// Set user ID
+matomo.setUserId('user123');
+
+// Reset user ID
+matomo.setUserId(null);
+```
+
+### `push(args)`
+
+Pushes any instruction directly to the Matomo tracker. This allows you to use any Matomo tracking method not explicitly exposed by this wrapper.
+
+**Parameters:**
+
+- `args` (array): Array of arguments to pass to Matomo
+
+**Example:**
+
+```javascript
+// Set custom dimension
+matomo.push(['setCustomDimension', 1, 'Premium User']);
+
+// Track site search
+matomo.push(['trackSiteSearch', 'keyword', 'category', 5]);
+
+// Set custom variable
+matomo.push(['setCustomVariable', 1, 'UserType', 'Premium', 'visit']);
+```
+
+For a complete list of available Matomo tracking methods, see the [Matomo JavaScript Tracking Guide](https://developer.matomo.org/guides/tracking-javascript-guide).
+
 ## License
 
 This project is licensed under the MIT License.
