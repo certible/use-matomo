@@ -72,9 +72,11 @@ describe('matomo', () => {
       trackRouter: true,
     });
 
+    await new Promise(resolve => setTimeout(resolve, 50));
+
     history.pushState({}, '', '/new-route');
 
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     const expectedUrl = `${window.location.origin}/new-route`;
     expect(window._paq).toContainEqual(['setCustomUrl', expectedUrl]);
@@ -88,10 +90,12 @@ describe('matomo', () => {
       trackRouter: true,
     });
 
+    await new Promise(resolve => setTimeout(resolve, 50));
+
     location.hash = '#/new-route';
     window.dispatchEvent(new HashChangeEvent('hashchange'));
 
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     const expectedUrl = `${window.location.origin}/#/new-route`;
     expect(window._paq).toContainEqual(['setCustomUrl', expectedUrl]);
