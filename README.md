@@ -217,3 +217,7 @@ For a complete list of available Matomo tracking methods, see the [Matomo JavaSc
 ## License
 
 This project is licensed under the MIT License.
+
+## About
+
+This package is developed and maintained by **[Certible](https://certible.com)**.
