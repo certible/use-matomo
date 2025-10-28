@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { initMatomo } from '../dist/index.js';
 
 const TRACKER_URL = './track.js';
-const PORT = 5173; // Default Vite dev server port
 
 describe('matomo', () => {
   beforeEach(() => {
@@ -73,14 +72,13 @@ describe('matomo', () => {
       trackRouter: true,
     });
 
-    const pushSpy = vi.spyOn(window._paq, 'push');
-
     history.pushState({}, '', '/new-route');
 
     await new Promise(resolve => setTimeout(resolve, 10));
 
-    expect(pushSpy).toHaveBeenCalledWith(['setCustomUrl', `http://localhost:${PORT}/new-route`]);
-    expect(pushSpy).toHaveBeenCalledWith(['trackPageView']);
+    const expectedUrl = `${window.location.origin}/new-route`;
+    expect(window._paq).toContainEqual(['setCustomUrl', expectedUrl]);
+    expect(window._paq).toContainEqual(['trackPageView']);
   });
 
   it('should automatically track router change with hash mode', async () => {
@@ -90,14 +88,13 @@ describe('matomo', () => {
       trackRouter: true,
     });
 
-    const pushSpy = vi.spyOn(window._paq, 'push');
-
     location.hash = '#/new-route';
     window.dispatchEvent(new HashChangeEvent('hashchange'));
 
     await new Promise(resolve => setTimeout(resolve, 10));
 
-    expect(pushSpy).toHaveBeenCalledWith(['setCustomUrl', `http://localhost:${PORT}/#/new-route`]);
-    expect(pushSpy).toHaveBeenCalledWith(['trackPageView']);
+    const expectedUrl = `${window.location.origin}/#/new-route`;
+    expect(window._paq).toContainEqual(['setCustomUrl', expectedUrl]);
+    expect(window._paq).toContainEqual(['trackPageView']);
   });
 });
