@@ -32,10 +32,10 @@
     "tracking"
   ],
   "devDependencies": {
-    "@vitest/browser": "4.0.4",
-    "@vitest/browser-playwright": "4.0.4",
+    "@vitest/browser": "4.0.13",
+    "@vitest/browser-playwright": "4.0.13",
     "playwright": "^1.54.2",
     "typescript": "^5.9.2",
-    "vitest": "4.0.4"
+    "vitest": "4.0.13"
   }
 }
