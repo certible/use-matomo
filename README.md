@@ -30,20 +30,23 @@ matomo.trackEvent('Category', 'Action', 'Name', 1);
 
 ### vue.js
 
-```javascript
+```typescript
 import { initMatomo } from '@certible/use-matomo';
 import { createApp } from 'vue';
 import App from './App.vue';
+
 const app = createApp(App);
-app.use(initMatomo({
+
+const matomo = initMatomo({
   host: 'https://your-matomo-instance.com',
   siteId: 1,
   // trackRouter: true, automatically tracks SPA page changes via history tracking
 }));
-app.provide('matomo', matomo);
+
+app.provide<MatomoTracker>('matomo', matomo);
 ```
 
-```javascript
+```typescript
 // In your components, you can access Matomo like this:
 import { inject } from 'vue';
 
