@@ -152,22 +152,23 @@ export function initMatomo(setupOptions: MatomoOptions) {
     window._paq.push(['setDomains', options.domains]);
   }
 
-  loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable)
+  const ready = loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable)
     .then(() => {
       // On initial page load, track the first page view
       if (options.enableLinkTracking) {
         window._paq.push(['enableLinkTracking']);
       }
       trackPageView();
-    })
-    .catch((error) => {
-      if (error.target) {
-        return console.error(
-          `An error occurred trying to load ${error.target.src}. `
-        );
-      }
-      console.error(error);
     });
+
+  ready.catch((error) => {
+    if (error.target) {
+      return console.error(
+        `An error occurred trying to load ${error.target.src}. `
+      );
+    }
+    console.error(error);
+  });
 
   /**
    * Tracks a custom event.
@@ -278,6 +279,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
     trackEvent,
     trackPageView,
     setUserId,
-    push
+    push,
+    ready
   };
 }

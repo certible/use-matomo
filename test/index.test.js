@@ -44,6 +44,7 @@ describe('matomo', () => {
     expect(matomo.trackPageView).toBeInstanceOf(Function);
     expect(matomo.trackEvent).toBeInstanceOf(Function);
     expect(matomo.push).toBeInstanceOf(Function);
+    expect(matomo.ready).toBeInstanceOf(Promise);
   });
 
   it('should normalize host when building tracker URLs', () => {
@@ -75,6 +76,17 @@ describe('matomo', () => {
     matomo.trackEvent('Category', 'Action', 'Name', 10);
 
     expect(window._paq).toContainEqual(['trackEvent', 'Category', 'Action', 'Name', 10]);
+  });
+
+  it('ready should resolve when script loading is disabled', async () => {
+    const matomo = initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerScriptDisable: true,
+    });
+
+    await expect(matomo.ready).resolves.toBeUndefined();
+    expect(window._paq).toContainEqual(['trackPageView']);
   });
 
   it('push should push arguments to _paq', () => {
