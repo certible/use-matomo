@@ -16,11 +16,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Enable pnpm
+        run: corepack enable pnpm
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Init Playwright
-        run: npx playwright install chromium --only-shell
+        run: pnpm exec playwright install chromium --only-shell
 
       - name: Run tests
-        run: npm run test:ci
+        run: pnpm run test:ci

@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "1.1.0",
+  "packageManager": "pnpm@11.3.0",
   "description": "A typed framework agnostic wrapper for Matomo js including SPA tracking.",
   "author": "Certible <oberreiter@certible.com>",
   "license": "MIT",
@@ -23,7 +24,7 @@
     "build:watch": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "vitest",
-    "test:ci": "npm run build && vitest"
+    "test:ci": "pnpm run build && vitest"
   },
   "keywords": [
     "matomo",

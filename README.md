@@ -5,7 +5,10 @@ A typed framework agnostic wrapper for Matomo js including SPA tracking.
 ## Installation
 
 ```bash
+# NPM
 npm install @certible/use-matomo
+# PNPM
+pnpm add @certible/use-matomo
 ```
 
 ## Usage
