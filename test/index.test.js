@@ -34,6 +34,16 @@ describe('matomo', () => {
     expect(matomo.push).toBeInstanceOf(Function);
   });
 
+  it('should normalize host when building tracker URLs', () => {
+    initMatomo({
+      host: 'https://example.com/',
+      siteId: 1,
+    });
+
+    expect(window._paq).toContainEqual(['setTrackerUrl', 'https://example.com/matomo.php']);
+    expect(document.querySelector('script[src="https://example.com/matomo.js"]')).toBeDefined();
+  });
+
   it('trackPageView should push correct data to _paq', () => {
     const matomo = initMatomo({
       host: 'https://example.com',
