@@ -203,6 +203,22 @@ Removes router tracking listeners and restores patched history methods.
 
 Use this when `trackRouter` is enabled and your app tears down the tracker, for example during hot module replacement or tests.
 
+**Vite HMR example:**
+
+```javascript
+const matomo = initMatomo({
+  host: 'https://analytics.example.com',
+  siteId: 1,
+  trackRouter: true,
+});
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    matomo.destroy();
+  });
+}
+```
+
 ### `push(args)`
 
 Pushes any instruction directly to the Matomo tracker. This allows you to use any Matomo tracking method not explicitly exposed by this wrapper.
