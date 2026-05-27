@@ -197,6 +197,12 @@ matomo.setUserId('user123');
 matomo.setUserId(null);
 ```
 
+### `destroy()`
+
+Removes router tracking listeners and restores patched history methods.
+
+Use this when `trackRouter` is enabled and your app tears down the tracker, for example during hot module replacement or tests.
+
 ### `push(args)`
 
 Pushes any instruction directly to the Matomo tracker. This allows you to use any Matomo tracking method not explicitly exposed by this wrapper.

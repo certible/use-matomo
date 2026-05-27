@@ -101,4 +101,23 @@ describe('matomo', () => {
     expect(window._paq).toContainEqual(['setCustomUrl', expectedUrl]);
     expect(window._paq).toContainEqual(['trackPageView']);
   });
+
+  it('should stop router tracking after destroy', async () => {
+    const matomo = initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackRouter: true,
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    matomo.destroy();
+    window._paq = [];
+    history.pushState({}, '', '/destroyed-route');
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(window._paq).not.toContainEqual(['setCustomUrl', `${window.location.origin}/destroyed-route`]);
+    expect(window._paq).not.toContainEqual(['trackPageView']);
+  });
 });
