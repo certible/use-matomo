@@ -32,8 +32,6 @@ declare global {
   }
 }
 
-let previousUrl: string;
-
 /**
  * Loads the Matomo tracker script.
  * @param trackerScript - The URL of the tracker script.
@@ -81,7 +79,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
     throw new Error('Matomo tracker requires a host and siteId to be set.');
   }
 
-  previousUrl = window.location.href;
+  let previousUrl = window.location.href;
   const options: Required<MatomoOptions> = {
     trackerFileName: 'matomo',
     enableLinkTracking: true,
