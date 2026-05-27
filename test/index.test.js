@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { initMatomo } from '../dist/index.js';
 
-const TRACKER_URL = './track.js';
+const TRACKER_SCRIPT_URL = './track.js';
 
 describe('matomo', () => {
   beforeEach(() => {
+    document.querySelectorAll('script').forEach((script) => script.remove());
     window._paq = [];
     vi.restoreAllMocks();
     history.pushState({}, '', '/');
@@ -14,13 +15,24 @@ describe('matomo', () => {
     const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
-      trackerUrl: TRACKER_URL,
     });
 
-    expect(window._paq).toContainEqual(['setTrackerUrl', TRACKER_URL]);
+    expect(window._paq).toContainEqual(['setTrackerUrl', 'https://example.com/matomo.php']);
     expect(window._paq).toContainEqual(['setSiteId', 1]);
     expect(matomo).toBeDefined();
-    expect(document.querySelector(`script[src="${TRACKER_URL}"]`)).toBeDefined();
+    expect(document.querySelector('script[src="https://example.com/matomo.js"]')).not.toBeNull();
+  });
+
+  it('should use custom tracker script and endpoint URLs independently', () => {
+    initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerUrl: 'https://analytics.example.com/custom.php',
+      trackerScriptUrl: TRACKER_SCRIPT_URL,
+    });
+
+    expect(window._paq).toContainEqual(['setTrackerUrl', 'https://analytics.example.com/custom.php']);
+    expect(document.querySelector(`script[src="${TRACKER_SCRIPT_URL}"]`)).not.toBeNull();
   });
 
   it('should return a tracker object', () => {
