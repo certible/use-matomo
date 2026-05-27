@@ -104,7 +104,7 @@ The `initMatomo` function accepts a configuration object with the following opti
 | `cookieDomain` | `string` | `''` | Set the cookie domain for cross-subdomain tracking, `window._paq.push(['setCookieDomain', options.cookieDomain])` |
 | `domains` | `string[]` | `[]` | List of domains to track as internal (for cross-domain tracking), `window._paq.push(['setDomains', options.domains])` |
 | `crossOrigin` | `'anonymous' \| 'use-credentials'` | `undefined` | Cross-origin attribute for the tracker script |
-| `preInitActions` | `any[]` | `[]` | Array of Matomo commands to execute before initialization |
+| `preInitActions` | `MatomoCommand[]` | `[]` | Array of Matomo commands to execute before initialization |
 | `trackRouter` | `boolean` | `false` | Automatically track SPA page changes via history API monitoring |
 
 ### Example with All Options
@@ -195,6 +195,16 @@ matomo.setUserId('user123');
 
 // Reset user ID
 matomo.setUserId(null);
+```
+
+### `ready`
+
+Promise that resolves after the tracker script loads and the initial page view is queued. It rejects when the script fails to load.
+
+**Example:**
+
+```javascript
+await matomo.ready;
 ```
 
 ### `push(args)`

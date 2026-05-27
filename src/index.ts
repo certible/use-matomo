@@ -1,3 +1,9 @@
+export type MatomoCommand = [methodName: string, ...parameters: unknown[]];
+
+type MatomoOptionsWithDefaults = Omit<Required<MatomoOptions>, 'crossOrigin'> & {
+  crossOrigin?: MatomoOptions['crossOrigin'];
+};
+
 export interface MatomoOptions {
   host: string;
   siteId: number | string;
@@ -15,7 +21,7 @@ export interface MatomoOptions {
   cookieDomain?: string;
   domains?: string[];
   crossOrigin?: 'anonymous' | 'use-credentials';
-  preInitActions?: any[];
+  preInitActions?: MatomoCommand[];
   trackRouter?: boolean;
 }
 
@@ -28,7 +34,7 @@ export type MatomoTracker = ReturnType<typeof initMatomo>;
 
 declare global {
   interface Window {
-    _paq: any[][];
+    _paq: MatomoCommand[];
   }
 }
 
@@ -39,6 +45,10 @@ declare global {
  * @param trackerScriptDisable - If set, the tracker script will not be loaded, eg. if you already have it loaded in your application.
  * @returns Promise that resolves when the script is loaded
  */
+function normalizeHost(host: string): string {
+  return host.replace(/\/+$/, '');
+}
+
 function loadScript(
   trackerScript: string, 
   crossOrigin?: 'anonymous' | 'use-credentials', 
@@ -80,7 +90,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
   }
 
   let previousUrl = window.location.href;
-  const options: Required<MatomoOptions> = {
+  const options: MatomoOptionsWithDefaults = {
     trackerFileName: 'matomo',
     enableLinkTracking: true,
     preInitActions: [],
@@ -96,11 +106,12 @@ export function initMatomo(setupOptions: MatomoOptions) {
     heartBeatTimerInterval: 15,
     cookieDomain: '',
     domains: [],
-    crossOrigin: undefined as any,
+    crossOrigin: undefined,
     ...setupOptions
   };
 
-  const { host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
+  const { siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
+  const host = normalizeHost(options.host);
   const scriptUrl = trackerScriptUrl || `${host}/${trackerFileName}.js`;
   const endpointUrl = trackerUrl || `${host}/${trackerFileName}.php`;
 
@@ -139,22 +150,23 @@ export function initMatomo(setupOptions: MatomoOptions) {
     window._paq.push(['setDomains', options.domains]);
   }
 
-  loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable)
+  const ready = loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable)
     .then(() => {
       // On initial page load, track the first page view
       if (options.enableLinkTracking) {
         window._paq.push(['enableLinkTracking']);
       }
       trackPageView();
-    })
-    .catch((error) => {
-      if (error.target) {
-        return console.error(
-          `An error occurred trying to load ${error.target.src}. `
-        );
-      }
-      console.error(error);
     });
+
+  ready.catch((error) => {
+    if (error.target) {
+      return console.error(
+        `An error occurred trying to load ${error.target.src}. `
+      );
+    }
+    console.error(error);
+  });
 
   /**
    * Tracks a custom event.
@@ -222,7 +234,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
    * @param args - The instruction to push.
    * @see https://developer.matomo.org/guides/tracking-javascript-guide
    */
-  function push(args: any[]): void {
+  function push(args: MatomoCommand): void {
     window._paq.push(args);
   }
 
@@ -265,6 +277,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
     trackEvent,
     trackPageView,
     setUserId,
-    push
+    push,
+    ready
   };
 }
