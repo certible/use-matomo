@@ -197,6 +197,28 @@ matomo.setUserId('user123');
 matomo.setUserId(null);
 ```
 
+### `destroy()`
+
+Removes router tracking listeners and restores patched history methods.
+
+Use this when `trackRouter` is enabled and your app tears down the tracker, for example during hot module replacement or tests.
+
+**Vite HMR example:**
+
+```javascript
+const matomo = initMatomo({
+  host: 'https://analytics.example.com',
+  siteId: 1,
+  trackRouter: true,
+});
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    matomo.destroy();
+  });
+}
+```
+
 ### `ready`
 
 Promise that resolves after the tracker script loads and the initial page view is queued. It rejects when the script fails to load.

@@ -38,6 +38,8 @@ declare global {
   }
 }
 
+let cleanupActiveRouterTracking: (() => void) | undefined;
+
 /**
  * Loads the Matomo tracker script.
  * @param trackerScript - The URL of the tracker script.
@@ -238,7 +240,11 @@ export function initMatomo(setupOptions: MatomoOptions) {
     window._paq.push(args);
   }
 
+  let cleanupRouterTracking: (() => void) | undefined;
+
   if (options.trackRouter) {
+    cleanupActiveRouterTracking?.();
+
     let trackingScheduled = false;
 
     const track = (): void => {
@@ -271,6 +277,23 @@ export function initMatomo(setupOptions: MatomoOptions) {
     // Listen for popstate and hashchange events
     window.addEventListener('popstate', track);
     window.addEventListener('hashchange', track);
+
+    cleanupRouterTracking = () => {
+      history.pushState = originalPushState;
+      history.replaceState = originalReplaceState;
+      window.removeEventListener('popstate', track);
+      window.removeEventListener('hashchange', track);
+
+      if (cleanupActiveRouterTracking === cleanupRouterTracking) {
+        cleanupActiveRouterTracking = undefined;
+      }
+    };
+    cleanupActiveRouterTracking = cleanupRouterTracking;
+  }
+
+  function destroy(): void {
+    cleanupRouterTracking?.();
+    cleanupRouterTracking = undefined;
   }
 
   return {
@@ -278,6 +301,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
     trackPageView,
     setUserId,
     push,
+    destroy,
     ready
   };
 }
