@@ -41,6 +41,10 @@ let previousUrl: string;
  * @param trackerScriptDisable - If set, the tracker script will not be loaded, eg. if you already have it loaded in your application.
  * @returns Promise that resolves when the script is loaded
  */
+function normalizeHost(host: string): string {
+  return host.replace(/\/+$/, '');
+}
+
 function loadScript(
   trackerScript: string, 
   crossOrigin?: 'anonymous' | 'use-credentials', 
@@ -102,7 +106,8 @@ export function initMatomo(setupOptions: MatomoOptions) {
     ...setupOptions
   };
 
-  const { host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
+  const { siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
+  const host = normalizeHost(options.host);
   const scriptUrl = trackerScriptUrl || `${host}/${trackerFileName}.js`;
   const endpointUrl = trackerUrl || `${host}/${trackerFileName}.php`;
 
