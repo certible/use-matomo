@@ -1,3 +1,9 @@
+export type MatomoCommand = [methodName: string, ...parameters: unknown[]];
+
+type MatomoOptionsWithDefaults = Omit<Required<MatomoOptions>, 'crossOrigin'> & {
+  crossOrigin?: MatomoOptions['crossOrigin'];
+};
+
 export interface MatomoOptions {
   host: string;
   siteId: number | string;
@@ -15,7 +21,7 @@ export interface MatomoOptions {
   cookieDomain?: string;
   domains?: string[];
   crossOrigin?: 'anonymous' | 'use-credentials';
-  preInitActions?: any[];
+  preInitActions?: MatomoCommand[];
   trackRouter?: boolean;
 }
 
@@ -28,7 +34,7 @@ export type MatomoTracker = ReturnType<typeof initMatomo>;
 
 declare global {
   interface Window {
-    _paq: any[][];
+    _paq: MatomoCommand[];
   }
 }
 
@@ -86,7 +92,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
   }
 
   previousUrl = window.location.href;
-  const options: Required<MatomoOptions> = {
+  const options: MatomoOptionsWithDefaults = {
     trackerFileName: 'matomo',
     enableLinkTracking: true,
     preInitActions: [],
@@ -102,7 +108,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
     heartBeatTimerInterval: 15,
     cookieDomain: '',
     domains: [],
-    crossOrigin: undefined as any,
+    crossOrigin: undefined,
     ...setupOptions
   };
 
@@ -229,7 +235,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
    * @param args - The instruction to push.
    * @see https://developer.matomo.org/guides/tracking-javascript-guide
    */
-  function push(args: any[]): void {
+  function push(args: MatomoCommand): void {
     window._paq.push(args);
   }
 
