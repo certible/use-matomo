@@ -197,6 +197,16 @@ matomo.setUserId('user123');
 matomo.setUserId(null);
 ```
 
+### `ready`
+
+Promise that resolves after the tracker script loads and the initial page view is queued. It rejects when the script fails to load.
+
+**Example:**
+
+```javascript
+await matomo.ready;
+```
+
 ### `push(args)`
 
 Pushes any instruction directly to the Matomo tracker. This allows you to use any Matomo tracking method not explicitly exposed by this wrapper.
