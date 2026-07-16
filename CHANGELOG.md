@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/certible/use-matomo/compare/v1.2.0...v1.2.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* queue initial page view before load ([9f50ff6](https://github.com/certible/use-matomo/commit/9f50ff61846f036887572c409dfb4a823d891387))
+
 ## [1.2.0](https://github.com/certible/use-matomo/compare/v1.1.0...v1.2.0) (2026-05-27)
 
 

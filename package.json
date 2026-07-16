@@ -9,7 +9,7 @@
       "import": "./dist/index.js"
     }
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "packageManager": "pnpm@11.4.0",
   "description": "A typed framework agnostic wrapper for Matomo js including SPA tracking.",
   "author": "Certible <oberreiter@certible.com>",
