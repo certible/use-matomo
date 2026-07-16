@@ -152,14 +152,11 @@ export function initMatomo(setupOptions: MatomoOptions) {
     window._paq.push(['setDomains', options.domains]);
   }
 
-  const ready = loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable)
-    .then(() => {
-      // On initial page load, track the first page view
-      if (options.enableLinkTracking) {
-        window._paq.push(['enableLinkTracking']);
-      }
-      trackPageView();
-    });
+  // Queue the initial page view before loading the tracker script so an early
+  // navigation cannot replace the entry URL. trackPageView also queues link tracking.
+  trackPageView();
+
+  const ready = loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable);
 
   ready.catch((error) => {
     if (error.target) {

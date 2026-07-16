@@ -78,15 +78,22 @@ describe('matomo', () => {
     expect(window._paq).toContainEqual(['trackEvent', 'Category', 'Action', 'Name', 10]);
   });
 
-  it('ready should resolve when script loading is disabled', async () => {
+  it('should queue the initial page view before the tracker script loads', async () => {
+    const initialUrl = window.location.href;
+    const initialTitle = document.title;
     const matomo = initMatomo({
       host: 'https://example.com',
       siteId: 1,
       trackerScriptDisable: true,
     });
 
+    const commandsQueuedAtInit = [...window._paq];
+    expect(commandsQueuedAtInit).toContainEqual(['setCustomUrl', initialUrl]);
+    expect(commandsQueuedAtInit).toContainEqual(['setDocumentTitle', initialTitle]);
+    expect(commandsQueuedAtInit.filter(([method]) => method === 'trackPageView')).toHaveLength(1);
+
     await expect(matomo.ready).resolves.toBeUndefined();
-    expect(window._paq).toContainEqual(['trackPageView']);
+    expect(window._paq.filter(([method]) => method === 'trackPageView')).toHaveLength(1);
   });
 
   it('push should push arguments to _paq', () => {
