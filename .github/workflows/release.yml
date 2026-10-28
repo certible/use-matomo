@@ -21,15 +21,15 @@ jobs:
         with:
           release-type: node
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         if: ${{ steps.release.outputs.release_created }}
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .tool-versions
           registry-url: https://registry.npmjs.org/
           scope: '@certible'
         if: ${{ steps.release.outputs.release_created }}
-      - run: corepack enable pnpm
+      - uses: pnpm/action-setup@v6
         if: ${{ steps.release.outputs.release_created }}
       - run: pnpm install --frozen-lockfile
         if: ${{ steps.release.outputs.release_created }}
