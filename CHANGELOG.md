@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/certible/use-matomo/compare/v1.2.1...v1.2.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* keep document.referrer for the initial page view ([49b37f4](https://github.com/certible/use-matomo/commit/49b37f458066d1436512df0e7d1b3ed4b4e8aa29))
+
 ## [1.2.1](https://github.com/certible/use-matomo/compare/v1.2.0...v1.2.1) (2026-07-16)
 
 
