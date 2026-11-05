@@ -91,7 +91,9 @@ export function initMatomo(setupOptions: MatomoOptions) {
     throw new Error('Matomo tracker requires a host and siteId to be set.');
   }
 
-  let previousUrl = window.location.href;
+  // The initial page view keeps the real referrer, e.g. a search engine.
+  // Later page views use the previous page URL as referrer.
+  let previousUrl = document.referrer;
   const options: MatomoOptionsWithDefaults = {
     trackerFileName: 'matomo',
     enableLinkTracking: true,
