@@ -96,6 +96,34 @@ describe('matomo', () => {
     expect(window._paq.filter(([method]) => method === 'trackPageView')).toHaveLength(1);
   });
 
+  it('should use document.referrer as referrer for the initial page view', () => {
+    vi.spyOn(document, 'referrer', 'get').mockReturnValue('https://www.google.com/');
+
+    initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerScriptDisable: true,
+    });
+
+    expect(window._paq).toContainEqual(['setReferrerUrl', 'https://www.google.com/']);
+    expect(window._paq).not.toContainEqual(['setReferrerUrl', window.location.href]);
+  });
+
+  it('should use the previous page URL as referrer for later page views', () => {
+    vi.spyOn(document, 'referrer', 'get').mockReturnValue('https://www.google.com/');
+    const initialUrl = window.location.href;
+
+    const matomo = initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerScriptDisable: true,
+    });
+    window._paq = [];
+    matomo.trackPageView('https://example.com/new-page');
+
+    expect(window._paq).toContainEqual(['setReferrerUrl', initialUrl]);
+  });
+
   it('push should push arguments to _paq', () => {
     const matomo = initMatomo({
       host: 'https://example.com',
