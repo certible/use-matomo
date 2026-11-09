@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/certible/use-matomo/compare/v1.2.2...v1.3.0) (2026-11-09)
+
+
+### Features
+
+* add trackInitialView option and refresh initial page title ([20c0e4c](https://github.com/certible/use-matomo/commit/20c0e4c9fc9c3cf4a55a1766277f7d13d0dfe15e))
+
 ## [1.2.2](https://github.com/certible/use-matomo/compare/v1.2.1...v1.2.2) (2026-11-05)
 
 
