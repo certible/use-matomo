@@ -23,12 +23,16 @@ export interface MatomoOptions {
   crossOrigin?: 'anonymous' | 'use-credentials';
   preInitActions?: MatomoCommand[];
   trackRouter?: boolean;
+  trackInitialView?: boolean;
 }
 
 interface TrackPageViewProps {
   deleteCustomVariables?: boolean;
   documentTitle?: string;
 }
+
+// Matomo runs a queued function with the tracker as `this` when it processes the command.
+type MatomoCallback = [callback: (this: { setDocumentTitle(title: string): void }) => void];
 
 export type MatomoTracker = ReturnType<typeof initMatomo>;
 
@@ -99,6 +103,7 @@ export function initMatomo(setupOptions: MatomoOptions) {
     enableLinkTracking: true,
     preInitActions: [],
     trackRouter: false,
+    trackInitialView: true,
     trackerUrl: '',
     trackerScriptUrl: '',
     trackerScriptDisable: false,
@@ -155,8 +160,10 @@ export function initMatomo(setupOptions: MatomoOptions) {
   }
 
   // Queue the initial page view before loading the tracker script so an early
-  // navigation cannot replace the entry URL. trackPageView also queues link tracking.
-  trackPageView();
+  // navigation cannot replace the entry URL. queuePageView also queues link tracking.
+  if (options.trackInitialView) {
+    queuePageView(window.location.href, {}, true);
+  }
 
   const ready = loadScript(scriptUrl, options.crossOrigin, options.trackerScriptDisable);
 
@@ -191,6 +198,14 @@ export function initMatomo(setupOptions: MatomoOptions) {
    * @param props - Additional properties to set for the page view.
    */
   function trackPageView(url: string = window.location.href, props: TrackPageViewProps = {}): void {
+    queuePageView(url, props, false);
+  }
+
+  /**
+   * @param refreshTitle - If set, Matomo reads document.title again when it processes the queue,
+   * as long as the URL did not change. The app can set the route title while the tracker script loads.
+   */
+  function queuePageView(url: string, props: TrackPageViewProps, refreshTitle: boolean): void {
     const trackPageViewOptions: Required<TrackPageViewProps> = { 
       deleteCustomVariables: true, 
       documentTitle: document.title, 
@@ -199,6 +214,14 @@ export function initMatomo(setupOptions: MatomoOptions) {
     window._paq.push(['setReferrerUrl', previousUrl]);
     window._paq.push(['setCustomUrl', url]);
     window._paq.push(['setDocumentTitle', trackPageViewOptions.documentTitle]);
+
+    if (refreshTitle) {
+      (window._paq as Array<MatomoCommand | MatomoCallback>).push([function () {
+        if (window.location.href === url) {
+          this.setDocumentTitle(document.title);
+        }
+      }]);
+    }
 
     // remove all previously assigned custom variables, requires Matomo 3.0.2
     if (trackPageViewOptions.deleteCustomVariables) {

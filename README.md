@@ -106,6 +106,26 @@ The `initMatomo` function accepts a configuration object with the following opti
 | `crossOrigin` | `'anonymous' \| 'use-credentials'` | `undefined` | Cross-origin attribute for the tracker script |
 | `preInitActions` | `MatomoCommand[]` | `[]` | Array of Matomo commands to execute before initialization |
 | `trackRouter` | `boolean` | `false` | Automatically track SPA page changes via history API monitoring |
+| `trackInitialView` | `boolean` | `true` | Track the initial page view during initialization. Set to `false` to call `trackPageView()` yourself, e.g. after your app sets the route title |
+
+### Initial Page View
+
+`initMatomo` queues the initial page view immediately, so an early navigation cannot replace the entry URL. When the tracker script processes the queue, it reads `document.title` again, as long as the URL did not change. Thus a title that your app sets while the tracker script loads is used.
+
+If your app sets the title later, set `trackInitialView: false` and track the initial page view yourself:
+
+```javascript
+const matomo = initMatomo({
+  host: 'https://analytics.example.com',
+  siteId: 1,
+  trackInitialView: false,
+});
+
+// After the first route resolved and set the title
+matomo.trackPageView();
+```
+
+Link tracking (`enableLinkTracking`) is queued with each `trackPageView()` call. With `trackInitialView: false`, it starts with your first call.
 
 ### Example with All Options
 
@@ -221,7 +241,7 @@ if (import.meta.hot) {
 
 ### `ready`
 
-Promise that resolves after the tracker script loads and the initial page view is queued. It rejects when the script fails to load.
+Promise that resolves after the tracker script loads. The initial page view (if `trackInitialView` is `true`) is queued during initialization. It rejects when the script fails to load.
 
 **Example:**
 

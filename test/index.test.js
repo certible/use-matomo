@@ -96,6 +96,63 @@ describe('matomo', () => {
     expect(window._paq.filter(([method]) => method === 'trackPageView')).toHaveLength(1);
   });
 
+  it('should not queue the initial page view if trackInitialView is false', () => {
+    vi.spyOn(document, 'referrer', 'get').mockReturnValue('https://www.google.com/');
+
+    const matomo = initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerScriptDisable: true,
+      trackInitialView: false,
+    });
+
+    expect(window._paq.filter(([method]) => method === 'trackPageView')).toHaveLength(0);
+    expect(window._paq).not.toContainEqual(['enableLinkTracking']);
+
+    matomo.trackPageView(window.location.href, { documentTitle: 'Dashboard' });
+
+    expect(window._paq).toContainEqual(['setReferrerUrl', 'https://www.google.com/']);
+    expect(window._paq).toContainEqual(['setDocumentTitle', 'Dashboard']);
+    expect(window._paq.filter(([method]) => method === 'trackPageView')).toHaveLength(1);
+  });
+
+  it('should read the title again for the initial page view when the tracker processes the queue', () => {
+    document.title = 'index.html title';
+    initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerScriptDisable: true,
+    });
+
+    const refreshIndex = window._paq.findIndex(([command]) => typeof command === 'function');
+    expect(refreshIndex).toBeGreaterThan(window._paq.findIndex(([method]) => method === 'setDocumentTitle'));
+    expect(refreshIndex).toBeLessThan(window._paq.findIndex(([method]) => method === 'trackPageView'));
+
+    const [refreshTitle] = window._paq[refreshIndex];
+    const tracker = { setDocumentTitle: vi.fn() };
+
+    document.title = 'Route title';
+    refreshTitle.call(tracker);
+    expect(tracker.setDocumentTitle).toHaveBeenCalledWith('Route title');
+
+    tracker.setDocumentTitle.mockClear();
+    history.pushState({}, '', '/other-route');
+    refreshTitle.call(tracker);
+    expect(tracker.setDocumentTitle).not.toHaveBeenCalled();
+  });
+
+  it('should not read the title again for manual page views', () => {
+    const matomo = initMatomo({
+      host: 'https://example.com',
+      siteId: 1,
+      trackerScriptDisable: true,
+    });
+    window._paq = [];
+    matomo.trackPageView();
+
+    expect(window._paq.some(([command]) => typeof command === 'function')).toBe(false);
+  });
+
   it('should use document.referrer as referrer for the initial page view', () => {
     vi.spyOn(document, 'referrer', 'get').mockReturnValue('https://www.google.com/');
 
